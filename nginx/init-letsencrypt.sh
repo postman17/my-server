@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 if ! [ -x "$(command -v docker-compose)" ]; then
   echo 'Error: docker-compose is not installed.' >&2
   exit 1
@@ -83,9 +85,9 @@ echo "### Enabled domains with SSL ..."
 for domain in $domains; do
   if [[ "$domain" != *"www"* ]]; then
     echo "now enabling this domain: $domain"
-    docker-compose -f $docker_compose_file_path exec nginx mv -i "/etc/nginx/conf.d/ssl.$domain.conf{.disabled,}"
+    docker-compose -f $docker_compose_file_path exec nginx mv -v "/etc/nginx/conf.d/ssl.$domain.conf.disabled" "/etc/nginx/conf.d/ssl.$domain.conf"
     echo "now disabling this domain: $domain"
-    docker-compose -f $docker_compose_file_path exec nginx mv -i "/etc/nginx/conf.d/$domain.conf{,.disabled}"
+    docker-compose -f $docker_compose_file_path exec nginx mv -v "/etc/nginx/conf.d/$domain.conf" "/etc/nginx/conf.d/$domain.conf.disabled"
   fi
 done
 

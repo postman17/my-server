@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+#set -x
 
 if ! [ -x "$(command -v docker-compose)" ]; then
   echo 'Error: docker-compose is not installed.' >&2
@@ -88,6 +88,8 @@ for domain in $domains; do
     docker-compose -f $docker_compose_file_path exec nginx mv -v "/etc/nginx/conf.d/ssl.$domain.conf.disabled" "/etc/nginx/conf.d/ssl.$domain.conf"
     echo "now disabling this domain: $domain"
     docker-compose -f $docker_compose_file_path exec nginx mv -v "/etc/nginx/conf.d/$domain.conf" "/etc/nginx/conf.d/$domain.conf.disabled"
+  else
+    echo "skipped: $domain"
   fi
 done
 

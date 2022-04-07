@@ -1,0 +1,31 @@
+version: '3.5'
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:13-alpine
+    env_file: .env.db
+    environment:
+      PGDATA: /data/postgres
+    volumes:
+       - ../data/postgres:/data/postgres
+    networks:
+      nginx_net:
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    env_file: .env.pgadmin
+    environment:
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+       - ../data/pgadmin:/var/lib/pgadmin
+    networks:
+      nginx_net:
+    restart: unless-stopped
+
+
+networks:
+  nginx_net:
+    external: true

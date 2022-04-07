@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  app:
+    image: nextcloud-local-image
+    env_file: .env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nextcloud
+    restart: unless-stopped
+    networks:
+      nginx_net:
+    volumes:
+      - ../data/nextcloud:/var/www/html
+      - /etc/localtime:/etc/localtime:ro
+    entrypoint: sh -c '/wait-for-it.sh postgres:5432 --timeout=10 -- /entrypoint.sh apache2-foreground'
+
+networks:
+  nginx_net:
+    external: true

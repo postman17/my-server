@@ -1,0 +1,5 @@
+.idea/
+data/pgadmin
+data/postgres
+.env.db
+.env.pgadmin

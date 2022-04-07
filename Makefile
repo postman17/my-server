@@ -29,9 +29,9 @@ clear:
 	rm -rf data/postgres data/pgadmin data/certbot data/nextcloud
 
 rename:
-	mv -v etc/nginx/conf.d/cloud.postman17.tech.conf.disabled etc/nginx/conf.d/cloud.postman17.tech.conf
-	mv -v etc/nginx/conf.d/pgadmin.postman17.tech.conf.disabled etc/nginx/conf.d/pgadmin.postman17.tech.conf
-	mv -v etc/nginx/conf.d/postman17.tech.conf.disabled etc/nginx/conf.d/postman17.tech.conf
-	mv -v etc/nginx/conf.d/ssl.cloud.postman17.tech.conf etc/nginx/conf.d/ssl.cloud.postman17.tech.conf.disabled
-	mv -v etc/nginx/conf.d/ssl.pgadmin.postman17.tech.conf etc/nginx/conf.d/ssl.pgadmin.postman17.tech.conf.disabled
-	mv -v etc/nginx/conf.d/ssl.postman17.tech.conf etc/nginx/conf.d/ssl.postman17.tech.conf.disabled
+	mv -v nginx/etc/nginx/conf.d/cloud.postman17.tech.conf.disabled etc/nginx/conf.d/cloud.postman17.tech.conf
+	mv -v nginx/etc/nginx/conf.d/pgadmin.postman17.tech.conf.disabled etc/nginx/conf.d/pgadmin.postman17.tech.conf
+	mv -v nginx/etc/nginx/conf.d/postman17.tech.conf.disabled etc/nginx/conf.d/postman17.tech.conf
+	mv -v nginx/etc/nginx/conf.d/ssl.cloud.postman17.tech.conf etc/nginx/conf.d/ssl.cloud.postman17.tech.conf.disabled
+	mv -v nginx/etc/nginx/conf.d/ssl.pgadmin.postman17.tech.conf etc/nginx/conf.d/ssl.pgadmin.postman17.tech.conf.disabled
+	mv -v nginx/etc/nginx/conf.d/ssl.postman17.tech.conf etc/nginx/conf.d/ssl.postman17.tech.conf.disabled

@@ -4,7 +4,7 @@ services:
   postgres:
     container_name: postgres
     image: postgres:13-alpine
-    env_file: .env.db
+    env_file: ./.env.db
     environment:
       PGDATA: /data/postgres
     volumes:
@@ -16,7 +16,7 @@ services:
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4
-    env_file: .env.pgadmin
+    env_file: ./.env.pgadmin
     environment:
       PGADMIN_CONFIG_SERVER_MODE: 'False'
     volumes:

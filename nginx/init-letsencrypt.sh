@@ -81,10 +81,12 @@ echo
 
 echo "### Enabled domains with SSL ..."
 for domain in $domains; do
-  echo "now enabling this domain: $domain"
-  docker-compose -f $docker_compose_file_path exec nginx mv -i "/etc/nginx/conf.d/ssl.$domain.conf{.disabled,}"
-  echo "now disabling this domain: $domain"
-  docker-compose -f $docker_compose_file_path exec nginx mv -i "/etc/nginx/conf.d/$domain.conf{,.disabled}"
+  if [[ "$domain" != *"www"* ]]; then
+    echo "now enabling this domain: $domain"
+    docker-compose -f $docker_compose_file_path exec nginx mv -i "/etc/nginx/conf.d/ssl.$domain.conf{.disabled,}"
+    echo "now disabling this domain: $domain"
+    docker-compose -f $docker_compose_file_path exec nginx mv -i "/etc/nginx/conf.d/$domain.conf{,.disabled}"
+  fi
 done
 
 

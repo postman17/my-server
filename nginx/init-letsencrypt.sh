@@ -43,6 +43,7 @@ echo "### Starting nginx ..."
 docker-compose -f $docker_compose_file_path up --force-recreate -d nginx
 echo
 
+
 echo "### Deleting dummy certificate for $domains ..."
 docker-compose -f $docker_compose_file_path run --rm --entrypoint "\
   rm -Rf /etc/letsencrypt/live/$domains && \
@@ -76,6 +77,16 @@ docker-compose -f $docker_compose_file_path run --rm --entrypoint "\
     --agree-tos \
     --force-renewal" certbot
 echo
+
+
+echo "### Enabled domains with SSL ..."
+for domain in $domains; do
+  echo "now enabling this domain: $domain"
+  docker-compose -f $docker_compose_file_path run nginx "sudo mv -i /etc/nginx/conf.d/ssl.$domain.conf{.disabled,}"
+  echo "now disabling this domain: $domain"
+  docker-compose -f $docker_compose_file_path run nginx "sudo mv -i /etc/nginx/conf.d/$domain.conf{,.disabled}"
+done
+
 
 echo "### Reloading nginx ..."
 docker-compose -f $docker_compose_file_path exec nginx nginx -s reload

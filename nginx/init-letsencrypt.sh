@@ -7,7 +7,7 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
-domains="cloud.postman17.tech pgadmin.postman17.tech"
+domains="postman17.tech www.postman17.tech cloud.postman17.tech pgadmin.postman17.tech"
 rsa_key_size=4096
 data_path="./data/certbot"
 docker_compose_file_path="nginx/docker-compose.yml"
@@ -58,38 +58,41 @@ echo
 
 
 echo "### Requesting Let's Encrypt certificate for $domains ..."
-
+domain_args=""
 for domain in $domains; do
   #Join $domain to -d args
-  domain_args="-d $domain -d 'www.$domain'"
-
-  # Select appropriate email arg
-  case "$email" in
-    "") email_arg="--register-unsafely-without-email" ;;
-    *) email_arg="--email $email" ;;
-  esac
-
-  # Enable staging mode if needed
-  if [ $staging != "0" ]; then staging_arg="--staging"; fi
-
-  docker-compose -f $docker_compose_file_path run --rm --entrypoint "\
-    certbot certonly --nginx --webroot -w /var/www/certbot \
-      $staging_arg \
-      $email_arg \
-      $domain_args \
-      --rsa-key-size $rsa_key_size \
-      --agree-tos \
-      --force-renewal" certbot
-  echo
+  domain_args="$domain_args -d $domain"
 done
+
+# Select appropriate email arg
+case "$email" in
+  "") email_arg="--register-unsafely-without-email" ;;
+  *) email_arg="--email $email" ;;
+esac
+
+# Enable staging mode if needed
+if [ $staging != "0" ]; then staging_arg="--staging"; fi
+
+docker-compose -f $docker_compose_file_path run --rm --entrypoint "\
+  certbot certonly --webroot -w /var/www/certbot \
+    $staging_arg \
+    $email_arg \
+    $domain_args \
+    --rsa-key-size $rsa_key_size \
+    --agree-tos \
+    --force-renewal" certbot
+echo
+
 
 
 echo "### Enabled domains in nginx with SSL ..."
 for domain in $domains; do
-  echo "now enabling this domain: $domain"
-  docker-compose -f $docker_compose_file_path exec nginx mv -v "/etc/nginx/conf.d/ssl.$domain.conf.disabled" "/etc/nginx/conf.d/ssl.$domain.conf"
-  echo "now disabling this domain: $domain"
-  docker-compose -f $docker_compose_file_path exec nginx mv -v "/etc/nginx/conf.d/$domain.conf" "/etc/nginx/conf.d/$domain.conf.disabled"
+  if [[ "$domain" != *"www"* ]]; then
+    echo "now enabling this domain: $domain"
+    docker-compose -f $docker_compose_file_path exec nginx mv -v "/etc/nginx/conf.d/ssl.$domain.conf.disabled" "/etc/nginx/conf.d/ssl.$domain.conf"
+    echo "now disabling this domain: $domain"
+    docker-compose -f $docker_compose_file_path exec nginx mv -v "/etc/nginx/conf.d/$domain.conf" "/etc/nginx/conf.d/$domain.conf.disabled"
+  fi
 done
 
 

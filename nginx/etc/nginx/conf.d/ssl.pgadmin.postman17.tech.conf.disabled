@@ -2,11 +2,12 @@ server {
   listen 80;
   listen 443 ssl;
   # Слушаем на портах 80 и 443
-  server_name pgadmin.postman17.tech www.pgadmin.postman17.tech;
+  server_name pgadmin.postman17.tech;
   # Этот сервер блок выполняется при этих доменных именах
 
-  ssl_certificate /etc/letsencrypt/live/pgadmin.postman17.tech/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/pgadmin.postman17.tech/privkey.pem;
+  ssl_certificate /etc/letsencrypt/live/postman17.tech/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/postman17.tech/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/postman17.tech/chain.pem;
   # ssl_certificate и ssl_certificate_key - необходимые сертификаты
   include /etc/letsencrypt/options-ssl-nginx.conf;
   ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;

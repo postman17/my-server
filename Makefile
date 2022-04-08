@@ -30,22 +30,22 @@ clear-volumes:
 	sudo chown -R konstantin data/pgadmin || true
 	sudo chown -R konstantin data/certbot || true
 	sudo chown -R konstantin data/nextcloud || true
-	rm -rf data/postgres
-	rm -rf data/pgadmin
-	rm -rf data/certbot
-	rm -rf data/nextcloud
+	rm -rf data/postgres || true
+	rm -rf data/pgadmin || true
+	rm -rf data/certbot || true
+	rm -rf data/nextcloud || true
 
 remove-configs:
-	sudo chown -R konstantin nginx/etc/nginx/conf.d/
-	rm -rf nginx/etc/nginx/conf.d/*.conf
-	rm -rf nginx/etc/nginx/conf.d/*.disabled
+	sudo chown -R konstantin nginx/etc/nginx/conf.d/ || true
+	rm -rf nginx/etc/nginx/conf.d/*.conf || true
+	rm -rf nginx/etc/nginx/conf.d/*.disabled || true
 
 remove-envs:
-	sudo chown -R konstantin nextcloud/
-	rm nextcloud/.env
-	sudo chown -R konstantin postgres/
-	rm postgres/.env.db
-	rm postgres/.env.pgadmin
+	sudo chown -R konstantin nextcloud/ || true
+	rm nextcloud/.env || true
+	sudo chown -R konstantin postgres/ || true
+	rm postgres/.env.db || true
+	rm postgres/.env.pgadmin || true
 
 remove-shit: clear-volumes remove-configs remove-envs
 

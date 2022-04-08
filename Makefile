@@ -35,3 +35,10 @@ remove-configs:
 	sudo chown -R konstantin nginx/etc/nginx/conf.d/
 	rm -rf nginx/etc/nginx/conf.d/*.conf
 	rm -rf nginx/etc/nginx/conf.d/*.disabled
+
+remove-envs:
+	sudo chown -R konstantin nextcloud/
+	rm nextcloud/.env
+	sudo chown -R konstantin postgres/
+	rm postgres/.env.db
+	rm postgres/.env.pgadmin

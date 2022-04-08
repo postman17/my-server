@@ -1,4 +1,5 @@
 start:
+	docker network create --gateway 172.16.1.1 --subnet 172.16.1.0/24 nginx_net
 	chmod +x nginx/init-letsencrypt.sh
 	sudo ./nginx/init-letsencrypt.sh qwerty@example.com 1 example.com false
 	docker-compose -f postgres/docker-compose.yml up -d
@@ -24,10 +25,7 @@ down:
 	docker-compose -f nextcloud/docker-compose.yml down
 	docker-compose -f nginx/docker-compose.yml down
 
-clear:
-	docker-compose -f postgres/docker-compose.yml down
-	docker-compose -f nextcloud/docker-compose.yml down
-	docker-compose -f nginx/docker-compose.yml down
+clear-volumes:
 	sudo chown -R konstantin data/postgres || true
 	sudo chown -R konstantin data/pgadmin || true
 	sudo chown -R konstantin data/certbot || true
@@ -49,5 +47,5 @@ remove-envs:
 	rm postgres/.env.db
 	rm postgres/.env.pgadmin
 
-shit: clear remove-configs remove-envs
+remove-shit: clear-volumes remove-configs remove-envs
 

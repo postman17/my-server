@@ -28,8 +28,14 @@ clear:
 	docker-compose -f postgres/docker-compose.yml down
 	docker-compose -f nextcloud/docker-compose.yml down
 	docker-compose -f nginx/docker-compose.yml down
-	sudo chown -R konstantin data/postgres data/pgadmin data/certbot data/nextcloud
-	rm -rf data/postgres data/pgadmin data/certbot data/nextcloud
+	sudo chown -R konstantin data/postgres || true
+	sudo chown -R konstantin data/pgadmin || true
+	sudo chown -R konstantin data/certbot || true
+	sudo chown -R konstantin data/nextcloud || true
+	rm -rf data/postgres
+	rm -rf data/pgadmin
+	rm -rf data/certbot
+	rm -rf data/nextcloud
 
 remove-configs:
 	sudo chown -R konstantin nginx/etc/nginx/conf.d/
@@ -42,3 +48,6 @@ remove-envs:
 	sudo chown -R konstantin postgres/
 	rm postgres/.env.db
 	rm postgres/.env.pgadmin
+
+shit: clear remove-configs remove-envs
+

@@ -117,6 +117,9 @@
       template:
         src: nginx/templates/ssl.sub_domain.conf.disabled
         dest: nginx/etc/nginx/conf.d/ssl.cloud.{{main_domain}}.conf.disabled
+    # Create docker network
+    - name: Create docker network
+      shell: docker network create --gateway 172.16.1.1 --subnet 172.16.1.0/24 nginx_net
     # Init nginx
     - name: Initial nginx and certbot
       shell: bash nginx/init-letsencrypt.sh {{email}} {{cerbot_staging}} {{main_domain}} {{is_nextcloud_need}}
@@ -154,5 +157,5 @@
     - debug: var=pg.stdout
     # Start nextcloud
     - name: Start nextcloud
-      shell: docker-compose -f nextcloud/docker-compose.yml up -d
+      shell: docker-compose -f nextcloud/docker-compose.yml up -d --build
       when: is_nextcloud_need == "true"

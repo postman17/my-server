@@ -107,7 +107,7 @@
         dest: nginx/etc/nginx/conf.d/ssl.pgadmin.{{main_domain}}.conf.disabled
     - set_fact:
         domain=cloud.{{main_domain}}
-        container=nextcolud
+        container=nextcloud
     - name: Create nextcloud nginx config
       template:
         src: nginx/templates/sub_domain.conf

@@ -15,14 +15,14 @@ up:
 	docker-compose -f nextcloud/docker-compose.yml up -d
 
 stop:
-	docker-compose -f nginx/docker-compose.yml stop
 	docker-compose -f postgres/docker-compose.yml stop
 	docker-compose -f nextcloud/docker-compose.yml stop
+	docker-compose -f nginx/docker-compose.yml stop
 
 down:
-	docker-compose -f nginx/docker-compose.yml down
 	docker-compose -f postgres/docker-compose.yml down
 	docker-compose -f nextcloud/docker-compose.yml down
+	docker-compose -f nginx/docker-compose.yml down
 
 clear:
 	docker-compose -f postgres/docker-compose.yml down

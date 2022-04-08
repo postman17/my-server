@@ -23,6 +23,7 @@ services:
     restart: unless-stopped
     networks:
       nginx_net:
+        ipv4_address: 172.16.1.2
     volumes:
       - ../data/certbot/conf:/etc/letsencrypt
       - ../data/certbot/www:/var/www/certbot

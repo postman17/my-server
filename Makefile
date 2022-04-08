@@ -30,3 +30,8 @@ clear:
 	docker-compose -f nginx/docker-compose.yml down
 	sudo chown -R konstantin data/postgres data/pgadmin data/certbot data/nextcloud
 	rm -rf data/postgres data/pgadmin data/certbot data/nextcloud
+
+remove-configs:
+	sudo chown -R konstantin nginx/etc/nginx/conf.d/
+	rm -rf nginx/etc/nginx/conf.d/*.conf
+	rm -rf nginx/etc/nginx/conf.d/*.disabled

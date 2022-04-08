@@ -58,6 +58,7 @@ docker-compose -f $docker_compose_file_path run --rm --entrypoint "\
     $domain_args \
     --rsa-key-size $rsa_key_size \
     --agree-tos \
+    --non-interactive \
     --force-renewal" certbot
 echo
 

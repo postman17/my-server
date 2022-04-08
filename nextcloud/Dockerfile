@@ -11,3 +11,4 @@ COPY ./wait-for-it.sh /
 RUN chmod u+x /install-apps.sh
 RUN chmod u+x /wait-for-it.sh
 RUN chsh -s /bin/bash www-data
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf

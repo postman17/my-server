@@ -11,7 +11,7 @@ services:
        - ../data/postgres:/data/postgres
     networks:
       nginx_net:
-        ipv4_address: 172.16.1.3
+        ipv4_address: 172.16.1.4
     restart: unless-stopped
 
   pgadmin:
@@ -24,7 +24,7 @@ services:
        - ../data/pgadmin:/var/lib/pgadmin
     networks:
       nginx_net:
-        ipv4_address: 172.16.1.4
+        ipv4_address: 172.16.1.5
     restart: unless-stopped
 
 

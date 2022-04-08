@@ -11,4 +11,4 @@ COPY ./wait-for-it.sh /
 RUN chmod u+x /install-apps.sh
 RUN chmod u+x /wait-for-it.sh
 RUN chsh -s /bin/bash www-data
-RUN echo "ServerName 172.16.1.5" >> /etc/apache2/apache2.conf
+RUN echo "ServerName 172.16.1.6" >> /etc/apache2/apache2.conf

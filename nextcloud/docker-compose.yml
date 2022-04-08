@@ -11,7 +11,7 @@ services:
     restart: unless-stopped
     networks:
       nginx_net:
-        ipv4_address: 172.16.1.5
+        ipv4_address: 172.16.1.6
     volumes:
       - ../data/nextcloud:/var/www/html
       - /etc/localtime:/etc/localtime:ro

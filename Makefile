@@ -11,7 +11,7 @@ start:
 	docker-compose -f nextcloud/docker-compose.yml up -d
 
 up:
-	docker-compose -f nginx/docker-compose.yml up nginx -d
+	docker-compose -f nginx/docker-compose.yml up -d nginx
 	docker-compose -f postgres/docker-compose.yml up -d
 	docker-compose -f nextcloud/docker-compose.yml up -d
 

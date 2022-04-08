@@ -1,2 +1,4 @@
 .idea/
-data/certbot
+conf.d/
+etc/nginx/conf.d/*
+!etc/nginx/conf.d/.gitkeep

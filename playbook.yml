@@ -1,0 +1,158 @@
+---
+- name: Initialize and start project
+  hosts: 127.0.0.1
+  connection: local
+  become: true
+# Variables block
+  vars_prompt:
+    - name: main_domain
+      prompt: "Enter main domain"
+      private: false
+      default: "example.com"
+    - name: email
+      prompt: "Enter email for ssl cert"
+      private: false
+      default: "qwerty@example.com"
+    - name: cerbot_staging
+      prompt: "Enter staging variable, '1' - for test, '0' - for production"
+      private: false
+      default: "1"
+    - name: postgres_user
+      prompt: "Enter username for postgresql"
+      private: false
+      default: "postgres"
+    - name: postgres_password
+      prompt: "Enter password for postgresql"
+      private: false
+      default: "testing123"
+    - name: pgadmin_password
+      prompt: "Enter password for pgadmin"
+      private: false
+      default: "admin"
+    - name: is_nextcloud_need
+      prompt: "Enter 'true' or 'false' for nextcloud installation"
+      private: false
+      default: "false"
+    - name: nextcloud_admin_username
+      prompt: "Enter nextcloud admin username"
+      private: false
+      default: "admin"
+    - name: nextcloud_admin_password
+      prompt: "Enter nextcloud admin password"
+      private: false
+      default: "admin"
+# Validate entered variables
+  pre_tasks:
+    - shell: pwd
+      register: current_folder
+    - set_fact:
+        current_folder={{ current_folder.stdout }}
+    - name: Validate main domain
+      fail:
+        msg: >-
+          Wrong domain mask
+      when: not main_domain is regex('(.+)[\.](.+)')
+      run_once: true
+    - name: Validate email
+      fail:
+        msg: >-
+          Wrong email mask
+      when: not email is regex('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
+      run_once: true
+    - name: Validate staging
+      fail:
+        msg: >-
+          Wrong staging input
+      when: cerbot_staging != "1" and cerbot_staging != "0"
+      run_once: true
+    - name: Validate is_nextcloud_need
+      fail:
+        msg: >-
+          Wrong nextcloud input
+      when: is_nextcloud_need != "true" and is_nextcloud_need != "false"
+      run_once: true
+# Tasks block
+  tasks:
+    - name: Create postgresql env file
+      template:
+        src: postgres/.env.db.template
+        dest: postgres/.env.db
+    - name: Create pgadmin env file
+      template:
+        src: postgres/.env.pgadmin.template
+        dest: postgres/.env.pgadmin
+    - name: Create nextcloud env file
+      template:
+        src: nextcloud/.env.template
+        dest: nextcloud/.env
+    # Create nginx configs
+    - name: Create main domain nginx config
+      template:
+        src: nginx/templates/main_domain.conf
+        dest: nginx/etc/nginx/conf.d/{{main_domain}}.conf
+    - name: Create main domain ssl nginx config
+      template:
+        src: nginx/templates/ssl.main_domain.conf.disabled
+        dest: nginx/etc/nginx/conf.d/ssl.{{main_domain}}.conf.disabled
+    - set_fact:
+        domain=pgadmin.{{main_domain}}
+        container=pgadmin
+    - name: Create pgadmin nginx config
+      template:
+        src: nginx/templates/sub_domain.conf
+        dest: nginx/etc/nginx/conf.d/pgadmin.{{main_domain}}.conf
+    - name: Create pgadmin ssl nginx config
+      template:
+        src: nginx/templates/ssl.sub_domain.conf.disabled
+        dest: nginx/etc/nginx/conf.d/ssl.pgadmin.{{main_domain}}.conf.disabled
+    - set_fact:
+        domain=cloud.{{main_domain}}
+        container=nextcolud
+    - name: Create nextcloud nginx config
+      template:
+        src: nginx/templates/sub_domain.conf
+        dest: nginx/etc/nginx/conf.d/cloud.{{main_domain}}.conf
+    - name: Create nextcloud ssl nginx config
+      when: is_nextcloud_need == "true"
+      template:
+        src: nginx/templates/ssl.sub_domain.conf.disabled
+        dest: nginx/etc/nginx/conf.d/ssl.cloud.{{main_domain}}.conf.disabled
+    # Init nginx
+    - name: Initial nginx and certbot
+      shell: bash nginx/init-letsencrypt.sh {{email}} {{cerbot_staging}} {{main_domain}} {{is_nextcloud_need}}
+      register: init_letsencrypt
+    - debug: var=init_letsencrypt.stdout
+#    - name: Start nginx
+#      shell: docker-compose -f nginx/docker-compose.yml up -d nginx
+#      register: ng
+#    - debug: var=ng.stdout
+  # Start postgresql
+    - name: Start Postgresql
+      shell: docker-compose -f postgres/docker-compose.yml up -d postgres
+      register: po
+    - debug: var=po.stdout
+  # Start pgadmin
+    - name: Start pgadmin
+      shell: docker-compose -f postgres/docker-compose.yml up -d pgadmin
+      register: pg
+    - debug: var=pg.stdout
+    - name: Wait 10 seconds
+      wait_for: timeout=10
+    - name: Stop pgadmin
+      shell: docker-compose -f postgres/docker-compose.yml stop pgadmin
+      register: pg
+    - debug: var=pg.stdout
+    - name: Wait 10 seconds
+      wait_for: timeout=10
+    - name: Set permissions for pgadmin volume folder
+      shell: sudo chown -R 5050:5050 data/pgadmin
+      register: pg
+    - debug: var=pg.stdout
+    - name: Start pgadmin
+      shell: docker-compose -f postgres/docker-compose.yml up -d pgadmin
+      register: pg
+    - debug: var=pg.stdout
+    # Start nextcloud
+    - name: Start nextcloud
+      shell: docker-compose -f nextcloud/docker-compose.yml up -d
+      when: is_nextcloud_need == "true"

@@ -24,6 +24,7 @@ down:
 	docker-compose -f postgres/docker-compose.yml down
 	docker-compose -f nextcloud/docker-compose.yml down
 	docker-compose -f nginx/docker-compose.yml down
+	docker network rm nginx_net
 
 clear-volumes:
 	sudo chown -R konstantin data/postgres || true

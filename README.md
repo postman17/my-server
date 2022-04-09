@@ -3,7 +3,8 @@
 ## If you use ansible
 - Install ansible on server
 - sudo ansible-playbook playbook.yml
-- After services started, run make install-apps in nextcloud directory if you need to install default nextcloud apps
+- After services started, for nextcloud install apps:
+  - In nextcloud folder run make install-apps
 
 ### If you use make file
 - Copy env examples files and fill variables
@@ -11,4 +12,5 @@
 - Do nginx configs from templates? use .disabled for first start with ssl configs in nginx/etc/nginx/conf.d/ folder
 - docker network create --gateway 172.16.1.1 --subnet 172.16.1.0/24 nginx_net
 - make start
-- After services started, run make install-apps in nextcloud directory if you need to install default nextcloud apps
+- After services started, for nextcloud install apps:
+  - In nextcloud folder run make install-apps

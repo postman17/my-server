@@ -10,7 +10,7 @@ fi
 
 email="$1" # Adding a valid address is strongly recommended
 staging="$2" # Set to 1 if you're testing your setup to avoid hitting request limits
-#domains="postman17.tech www.postman17.tech cloud.postman17.tech pgadmin.postman17.tech"
+
 nextcloud=""
 if [[ "$4" == "true" ]]; then
   nextcloud="cloud.$3"

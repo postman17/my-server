@@ -49,4 +49,3 @@ remove-envs:
 	rm postgres/.env.pgadmin || true
 
 remove-shit: clear-volumes remove-configs remove-envs
-

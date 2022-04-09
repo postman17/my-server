@@ -9,8 +9,7 @@
 ### If you use make file
 - Copy env examples files and fill variables
 - Fill make file variables in 3 row with email, domain, staging and true or false for nextcloud
-- Do nginx configs from templates? use .disabled for first start with ssl configs in nginx/etc/nginx/conf.d/ folder
-- docker network create --gateway 172.16.1.1 --subnet 172.16.1.0/24 nginx_net
+- Do nginx configs from templates, use .disabled for first start with ssl configs in nginx/etc/nginx/conf.d/ folder
 - make start
 - After services started, for nextcloud install apps:
   - In nextcloud folder run make install-apps

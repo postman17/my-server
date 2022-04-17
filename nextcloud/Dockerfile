@@ -8,7 +8,7 @@ ARG NEXTCLOUD_CUSTOM_APPS
 COPY ./install-apps.sh /
 COPY ./wait-for-it.sh /
 
-RUN apt-get install -y --no-install-recommends $(apt-cache search libmagickcore-6.q[0-9][0-9]-[0-9]-extra | cut -d " " -f1)
+RUN apt -y update && apt install -y --no-install-recommends $(apt-cache search libmagickcore-6.q[0-9][0-9]-[0-9]-extra | cut -d " " -f1)
 
 RUN chmod u+x /install-apps.sh
 RUN chmod u+x /wait-for-it.sh

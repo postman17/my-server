@@ -1,3 +1,6 @@
+#!/bin/bash
+
+
 nextcloud=""
 if [[ "$2" == "true" ]]; then
   nextcloud="cloud.$1"

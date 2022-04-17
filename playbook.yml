@@ -134,10 +134,11 @@
     - name: Initial nginx and certbot
       shell: bash nginx/init-letsencrypt.sh {{email}} {{cerbot_staging}} {{main_domain}} {{is_nextcloud_need}}
       register: init_nginx
+      when: is_new_certs_need  == "true"
     - name: Start nginx with old certs
       shell: docker-compose -f nginx/docker-compose.yml up -d nginx
       register: init_nginx
-      when: is_new_certs_need  == "true"
+      when: is_new_certs_need  == "false"
     - debug: var=init_nginx.stdout
   # Start postgresql
     - name: Start Postgresql

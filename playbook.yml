@@ -43,7 +43,7 @@
       default: "admin"
     - name: is_new_certs_need
       prompt: "Enter 'true' or 'false' for new SSL certs installation"
-      private: true
+      private: false
       default: "true"
 # Validate entered variables
   pre_tasks:

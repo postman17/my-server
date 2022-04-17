@@ -8,6 +8,8 @@ ARG NEXTCLOUD_CUSTOM_APPS
 COPY ./install-apps.sh /
 COPY ./wait-for-it.sh /
 
+RUN apt install php-imagick imagemagick
+
 RUN chmod u+x /install-apps.sh
 RUN chmod u+x /wait-for-it.sh
 RUN chsh -s /bin/bash www-data

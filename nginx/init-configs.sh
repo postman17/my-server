@@ -6,6 +6,7 @@ if [[ "$2" == "true" ]]; then
   nextcloud="cloud.$1"
 fi
 domains="$1 www.$1 pgadmin.$1 $nextcloud"
+docker_compose_file_path="nginx/docker-compose.yml"
 
 
 echo "### Starting nginx ..."

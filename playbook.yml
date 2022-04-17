@@ -136,7 +136,7 @@
       register: init_nginx
       when: is_new_certs_need  == "true"
     - name: Start nginx with old certs
-      shell: docker-compose -f nginx/docker-compose.yml up -d nginx
+      shell: bash nginx/init-configs.sh {{main_domain}} {{is_nextcloud_need}}
       register: init_nginx
       when: is_new_certs_need  == "false"
     - debug: var=init_nginx.stdout

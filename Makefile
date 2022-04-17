@@ -26,17 +26,21 @@ down:
 	docker-compose -f nginx/docker-compose.yml down
 	docker network rm nginx_net
 
-clear-volumes:
+clear-certs-volume:
+	sudo chown -R konstantin data/certbot || true
+	rm -rf data/certbot || true
+
+clear-volumes-without-certs:
 	sudo chown -R konstantin data/postgres || true
 	sudo chown -R konstantin data/pgadmin || true
-	sudo chown -R konstantin data/certbot || true
 	sudo chown -R konstantin data/nextcloud || true
 	sudo chown -R konstantin data/nginx || true
 	rm -rf data/postgres || true
 	rm -rf data/pgadmin || true
-	rm -rf data/certbot || true
 	rm -rf data/nextcloud || true
 	rm -rf data/nginx || true
+
+clear-all-volumes: clear-volumes-without-certs clear-certs-volume
 
 remove-configs:
 	sudo chown -R konstantin nginx/etc/nginx/conf.d/ || true
@@ -50,4 +54,6 @@ remove-envs:
 	rm postgres/.env.db || true
 	rm postgres/.env.pgadmin || true
 
-remove-shit: clear-volumes remove-configs remove-envs
+remove-all: clear-all-volumes remove-configs remove-envs
+
+remove-all-without-certs: clear-volumes-without-certs remove-configs remove-envs

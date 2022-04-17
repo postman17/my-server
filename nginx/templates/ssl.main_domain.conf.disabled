@@ -5,6 +5,9 @@ server {
   server_name {{main_domain}} www.{{main_domain}};
   # Этот сервер блок выполняется при этих доменных именах
 
+  # Логи
+  error_log /var/log/nginx/{{main_domain}}.error warn;
+
   ssl_certificate /etc/letsencrypt/live/{{main_domain}}/fullchain.pem;
   ssl_certificate_key /etc/letsencrypt/live/{{main_domain}}/privkey.pem;
   ssl_trusted_certificate /etc/letsencrypt/live/{{main_domain}}/chain.pem;

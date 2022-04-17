@@ -11,6 +11,7 @@ services:
     volumes:
       - ../data/certbot/conf:/etc/letsencrypt
       - ../data/certbot/www:/var/www/certbot
+      - ../data/nginx/logs:/var/log/nginx/
       - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./etc/nginx/conf.d:/etc/nginx/conf.d
     ports:

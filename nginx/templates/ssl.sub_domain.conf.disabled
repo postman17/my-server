@@ -25,8 +25,9 @@ server {
   # Путь по которому certbot сможет проверить сервер на подлинность
 
   location / {
+    proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
     resolver 127.0.0.11;
-    set $project http://{{container}}:80;
+    set $project http://{{container}};
     proxy_pass $project;
   }
 }

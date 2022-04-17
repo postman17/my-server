@@ -26,7 +26,7 @@ server {
 
   location / {
     resolver 127.0.0.11;
-    set $project http://pgadmin:80;
+    set $project http://pgadmin;
     proxy_pass $project;
   }
 }

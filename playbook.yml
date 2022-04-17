@@ -116,7 +116,6 @@
         src: nginx/templates/ssl.sub_domain.conf.disabled
         dest: nginx/etc/nginx/conf.d/ssl.pgadmin.{{main_domain}}.conf.disabled
     - set_fact:
-        domain=cloud.{{main_domain}}
         container=nextcloud
     - name: Create nextcloud nginx config
       template:
@@ -125,7 +124,7 @@
     - name: Create nextcloud ssl nginx config
       when: is_nextcloud_need == "true"
       template:
-        src: nginx/templates/ssl.sub_domain.conf.disabled
+        src: nginx/templates/ssl.cloud.conf.disabled
         dest: nginx/etc/nginx/conf.d/ssl.cloud.{{main_domain}}.conf.disabled
     # Create docker network
     - name: Create docker network

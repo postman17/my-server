@@ -2,15 +2,15 @@ server {
   listen 80;
   listen 443 ssl;
   # Слушаем на портах 80 и 443
-  server_name cloud.example.com;
+  server_name cloud.{{main_domain}};
   # Этот сервер блок выполняется при этих доменных именах
 
   # Логи
-  error_log /var/log/nginx/cloud.example.com.error warn;
+  error_log /var/log/nginx/cloud.{{main_domain}}.error warn;
 
-  ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;
-  ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;
-  ssl_trusted_certificate /etc/letsencrypt/live/example.com/chain.pem;
+  ssl_certificate /etc/letsencrypt/live/{{main_domain}}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/{{main_domain}}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/{{main_domain}}/chain.pem;
   # ssl_certificate и ssl_certificate_key - необходимые сертификаты
   include /etc/letsencrypt/options-ssl-nginx.conf;
   ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
@@ -19,7 +19,7 @@ server {
   # Определяем, нужен ли редирект с www на без www'шную версию
   if ($server_port = 80) { set $https_redirect 1; }
   if ($host ~ '^www\.') { set $https_redirect 1; }
-  if ($https_redirect = 1) { return 301 https://cloud.example.com$request_uri; }
+  if ($https_redirect = 1) { return 301 https://cloud.{{main_domain}}$request_uri; }
 
   location /.well-known/acme-challenge/ { root /var/www/certbot; }
   # Путь по которому certbot сможет проверить сервер на подлинность
@@ -35,7 +35,7 @@ server {
     add_header Strict-Transport-Security "max-age=15552000; includeSubDomains" always;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     resolver 127.0.0.11;
-    set $project http://nextcloud:80;
+    set $project http://{{container}};
     proxy_pass $project;
   }
 }

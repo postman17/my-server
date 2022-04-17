@@ -41,6 +41,10 @@
       prompt: "Enter nextcloud admin password"
       private: false
       default: "admin"
+    - name: is_new_certs_need
+      prompt: "Enter 'true' or 'false' for new SSL certs installation"
+      private: true
+      default: "true"
 # Validate entered variables
   pre_tasks:
     - shell: pwd
@@ -70,6 +74,12 @@
         msg: >-
           Wrong nextcloud input
       when: is_nextcloud_need != "true" and is_nextcloud_need != "false"
+      run_once: true
+    - name: Validate is_new_certs_need
+      fail:
+        msg: >-
+          Wrong nginx certs input
+      when: is_new_certs_need != "true" and is_new_certs_need != "false"
       run_once: true
 # Tasks block
   tasks:
@@ -123,12 +133,12 @@
     # Init nginx
     - name: Initial nginx and certbot
       shell: bash nginx/init-letsencrypt.sh {{email}} {{cerbot_staging}} {{main_domain}} {{is_nextcloud_need}}
-      register: init_letsencrypt
-    - debug: var=init_letsencrypt.stdout
-#    - name: Start nginx
-#      shell: docker-compose -f nginx/docker-compose.yml up -d nginx
-#      register: ng
-#    - debug: var=ng.stdout
+      register: init_nginx
+    - name: Start nginx with old certs
+      shell: docker-compose -f nginx/docker-compose.yml up -d nginx
+      register: init_nginx
+      when: is_new_certs_need  == "true"
+    - debug: var=init_nginx.stdout
   # Start postgresql
     - name: Start Postgresql
       shell: docker-compose -f postgres/docker-compose.yml up -d postgres

@@ -8,6 +8,9 @@ server {
   # Логи
   error_log /var/log/nginx/cloud.{{main_domain}}.error warn;
 
+  # Максимальный размер загружаемого файла
+  client_max_body_size 512M;
+
   ssl_certificate /etc/letsencrypt/live/{{main_domain}}/fullchain.pem;
   ssl_certificate_key /etc/letsencrypt/live/{{main_domain}}/privkey.pem;
   ssl_trusted_certificate /etc/letsencrypt/live/{{main_domain}}/chain.pem;

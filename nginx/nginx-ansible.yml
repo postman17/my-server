@@ -50,7 +50,7 @@
   shell: docker network create --gateway 172.16.1.1 --subnet 172.16.1.0/24 nginx_net
 # Init nginx
 - name: Initial nginx and certbot
-  shell: bash nginx/init-letsencrypt.sh {{email}} {{cerbot_staging}} {{main_domain}} {{is_nextcloud_need}} {{is_sentry_need}}
+  shell: bash nginx/init-letsencrypt.sh {{email}} {{certbot_staging}} {{main_domain}} {{is_nextcloud_need}} {{is_sentry_need}}
   register: init_nginx
   when: is_new_certs_need  == "true"
 - name: Start nginx with old certs

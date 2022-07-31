@@ -13,3 +13,12 @@
 - make start
 - After services started, for nextcloud install apps:
   - In nextcloud folder run make install-apps
+
+
+#### Secondary scripts
+
+##### Add nginx subdomain config
+- ```ansible-playbook add-subdomain.yml```
+
+##### Recreate letsecrypt ssl certs
+- ```ansible-playbook recreate-ssl-certs.yml```

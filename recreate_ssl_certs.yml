@@ -9,14 +9,18 @@
       prompt: "Enter main domain"
       private: false
       default: "example.com"
-    - name: subdomain
-      prompt: "Enter sub domain"
-      private: false
-      default: "example"
     - name: container
       prompt: "Enter container and port for nginx reverse proxy"
       private: false
       default: "example:8000"
+    - name: email
+      prompt: "Enter email for ssl cert"
+      private: false
+      default: "qwerty@example.com"
+    - name: certbot_staging
+      prompt: "Enter staging variable, '1' - for test, '0' - for production"
+      private: false
+      default: "1"
 # Validate entered variables
   pre_tasks:
     - name: Validate email
@@ -25,21 +29,15 @@
           Wrong email mask
       when: not email is regex('^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
       run_once: true
+    - name: Validate staging
+      fail:
+        msg: >-
+          Wrong staging input
+      when: certbot_staging != "1" and certbot_staging != "0"
 # Tasks block
   tasks:
-    # Create configs
-    - set_fact:
-        domain={{subdomain}}.{{main_domain}}
-        container={{container}}
-    - name: Create nginx config
-      template:
-        src: nginx/templates/sub_domain.conf
-        dest: nginx/etc/nginx/conf.d/{{subdomain}}.{{main_domain}}.conf
-    - name: Create ssl nginx config
-      template:
-        src: nginx/templates/ssl.sub_domain.conf.disabled
-        dest: nginx/etc/nginx/conf.d/ssl.{{subdomain}}.{{main_domain}}.conf.disabled
+    # Certbot certs
     - name: Start nginx with old certs
-      shell: bash nginx/one_domain_config.sh {{domain}}
+      shell: bash nginx/init-letsencrypt.sh {{email}} {{certbot_staging}} {{main_domain}} true true
       register: init_nginx
     - debug: var=init_nginx.stdout

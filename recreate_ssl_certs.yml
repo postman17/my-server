@@ -52,6 +52,8 @@
       run_once: true
 # Tasks block
   tasks:
+    - name: Remove old nginx configs
+      shell: make remove-configs
     # Create main domain configs
     - name: Create main domain nginx config
       template:
@@ -99,8 +101,6 @@
         src: nginx/templates/ssl.sub_domain.conf.disabled
         dest: nginx/etc/nginx/conf.d/ssl.sentry.{{main_domain}}.conf.disabled
     # Certbot certs
-    - name: Get back http nginx configs
-      shell: make remove-configs
     - name: Create new certs and restart certbot and nginx
       shell: bash nginx/init-letsencrypt.sh {{email}} {{certbot_staging}} {{main_domain}} {{is_nextcloud_need}} {{is_sentry_need}}
       register: init_nginx

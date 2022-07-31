@@ -34,6 +34,6 @@
   tasks:
     # Certbot certs
     - name: Create new certs and restart certbot and nginx
-      shell: bash nginx/init-letsencrypt.sh {{email}} {{certbot_staging}} {{main_domain}} true true
+      shell: bash nginx/init_only_letsencrypt.sh {{email}} {{certbot_staging}} {{main_domain}} true true
       register: init_nginx
     - debug: var=init_nginx.stdout

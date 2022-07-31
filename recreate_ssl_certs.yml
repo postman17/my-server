@@ -34,7 +34,7 @@
   tasks:
     # Certbot certs
     - name: Get back http nginx configs
-      shell: bash nginx get_back_configs.sh
+      shell: bash get_back_configs.sh
     - name: Create new certs and restart certbot and nginx
       shell: bash nginx/init-letsencrypt.sh {{email}} {{certbot_staging}} {{main_domain}} true true
       register: init_nginx

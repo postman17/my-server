@@ -52,10 +52,56 @@
       run_once: true
 # Tasks block
   tasks:
+    # Create main domain configs
+    - name: Create main domain nginx config
+      template:
+        src: nginx/templates/main_domain.conf
+        dest: nginx/etc/nginx/conf.d/{{main_domain}}.conf
+    - name: Create main domain ssl nginx config
+      template:
+        src: nginx/templates/ssl.main_domain.conf.disabled
+        dest: nginx/etc/nginx/conf.d/ssl.{{main_domain}}.conf.disabled
+    # Create pgadmin configs
+    - set_fact:
+        domain=pgadmin.{{main_domain}}
+        container=pgadmin
+    - name: Create pgadmin nginx config
+      template:
+        src: nginx/templates/sub_domain.conf
+        dest: nginx/etc/nginx/conf.d/pgadmin.{{main_domain}}.conf
+    - name: Create pgadmin ssl nginx config
+      template:
+        src: nginx/templates/ssl.sub_domain.conf.disabled
+        dest: nginx/etc/nginx/conf.d/ssl.pgadmin.{{main_domain}}.conf.disabled
+    # Create nextcloud configs
+    - set_fact:
+        container=nextcloud
+    - name: Create nextcloud nginx config
+      template:
+        src: nginx/templates/sub_domain.conf
+        dest: nginx/etc/nginx/conf.d/cloud.{{main_domain}}.conf
+    - name: Create nextcloud ssl nginx config
+      when: is_nextcloud_need == "true"
+      template:
+        src: nginx/templates/ssl.cloud.conf.disabled
+        dest: nginx/etc/nginx/conf.d/ssl.cloud.{{main_domain}}.conf.disable
+    # Create sentry configs
+    - set_fact:
+        domain=sentry.{{main_domain}}
+        container=web:9000
+    - name: Create sentry nginx config
+      template:
+        src: nginx/templates/sub_domain.conf
+        dest: nginx/etc/nginx/conf.d/sentry.{{main_domain}}.conf
+    - name: Create sentry ssl nginx config
+      when: is_sentry_need == "true"
+      template:
+        src: nginx/templates/ssl.sub_domain.conf.disabled
+        dest: nginx/etc/nginx/conf.d/ssl.sentry.{{main_domain}}.conf.disabled
     # Certbot certs
     - name: Get back http nginx configs
-      shell: bash nginx/get_back_configs.sh {{main_domain}} {{is_nextcloud_need}} {{is_sentry_need}}
-#    - name: Create new certs and restart certbot and nginx
-#      shell: bash nginx/init-letsencrypt.sh {{email}} {{certbot_staging}} {{main_domain}} {{is_nextcloud_need}} {{is_sentry_need}}
-#      register: init_nginx
-#    - debug: var=init_nginx.stdout
+      shell: make remove-configs
+    - name: Create new certs and restart certbot and nginx
+      shell: bash nginx/init-letsencrypt.sh {{email}} {{certbot_staging}} {{main_domain}} {{is_nextcloud_need}} {{is_sentry_need}}
+      register: init_nginx
+    - debug: var=init_nginx.stdout

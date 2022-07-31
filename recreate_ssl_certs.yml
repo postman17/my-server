@@ -17,6 +17,14 @@
       prompt: "Enter staging variable, '1' - for test, '0' - for production"
       private: false
       default: "1"
+    - name: is_nextcloud_need
+      prompt: "Enter 'true' or 'false' for nextcloud installation"
+      private: false
+      default: "false"
+    - name: is_sentry_need
+      prompt: "Enter 'true' or 'false' for sentry installation"
+      private: false
+      default: "false"
 # Validate entered variables
   pre_tasks:
     - name: Validate email
@@ -30,12 +38,24 @@
         msg: >-
           Wrong staging input
       when: certbot_staging != "1" and certbot_staging != "0"
+    - name: Validate is_nextcloud_need
+      fail:
+        msg: >-
+          Wrong nextcloud input
+      when: is_nextcloud_need != "true" and is_nextcloud_need != "false"
+      run_once: true
+    - name: Validate is_sentry_need
+      fail:
+        msg: >-
+          Wrong sentry input
+      when: is_sentry_need != "true" and is_sentry_need != "false"
+      run_once: true
 # Tasks block
   tasks:
     # Certbot certs
     - name: Get back http nginx configs
-      shell: bash nginx/get_back_configs.sh
+      shell: bash nginx/get_back_configs.sh {{main_domain}} {{is_nextcloud_need}} {{is_sentry_need}}
     - name: Create new certs and restart certbot and nginx
-      shell: bash nginx/init-letsencrypt.sh {{email}} {{certbot_staging}} {{main_domain}} true true
+      shell: bash nginx/init-letsencrypt.sh {{email}} {{certbot_staging}} {{main_domain}} {{is_nextcloud_need}} {{is_sentry_need}}
       register: init_nginx
     - debug: var=init_nginx.stdout

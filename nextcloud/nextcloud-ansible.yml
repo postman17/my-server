@@ -1,0 +1,9 @@
+# Fill env file
+- name: Create nextcloud env file
+  template:
+    src: nextcloud/.env.template
+    dest: nextcloud/.env
+# Start nextcloud
+- name: Start nextcloud
+  shell: docker-compose -f nextcloud/docker-compose.yml up -d --build
+  when: is_nextcloud_need == "true"

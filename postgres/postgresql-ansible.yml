@@ -1,0 +1,35 @@
+# Set configs
+- name: Create postgresql env file
+  template:
+    src: postgres/.env.db.template
+    dest: postgres/.env.db
+- name: Create pgadmin env file
+  template:
+    src: postgres/.env.pgadmin.template
+    dest: postgres/.env.pgadmin
+# Start postgresql
+- name: Start Postgresql
+  shell: docker-compose -f postgres/docker-compose.yml up -d postgres
+  register: po
+- debug: var=po.stdout
+# Start pgadmin
+- name: Start pgadmin
+  shell: docker-compose -f postgres/docker-compose.yml up -d pgadmin
+  register: pg
+- debug: var=pg.stdout
+- name: Wait 10 seconds
+  wait_for: timeout=10
+- name: Stop pgadmin
+  shell: docker-compose -f postgres/docker-compose.yml stop pgadmin
+  register: pg
+- debug: var=pg.stdout
+- name: Wait 10 seconds
+  wait_for: timeout=10
+- name: Set permissions for pgadmin volume folder
+  shell: sudo chown -R 5050:5050 data/pgadmin
+  register: pg
+- debug: var=pg.stdout
+- name: Start pgadmin
+  shell: docker-compose -f postgres/docker-compose.yml up -d pgadmin
+  register: pg
+- debug: var=pg.stdout

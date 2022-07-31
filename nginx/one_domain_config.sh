@@ -1,15 +1,7 @@
 #!/bin/bash
 
 
-nextcloud=""
-if [[ "$2" == "true" ]]; then
-  nextcloud="cloud.$1"
-fi
-sentry=""
-if [[ "$3" == "true" ]]; then
-  nextcloud="sentry.$1"
-fi
-domains="$1 www.$1 pgadmin.$1 $nextcloud $sentry"
+domains="$1"
 docker_compose_file_path="nginx/docker-compose.yml"
 
 

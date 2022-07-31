@@ -1,0 +1,5 @@
+- name: Download sentry repository
+  shell: cd sentry && bash install.sh
+  register: sentry
+  when: is_sentry_need == "true"
+- debug: var=sentry.stdout

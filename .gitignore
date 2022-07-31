@@ -3,3 +3,4 @@ data/certbot
 data/postgres
 data/pgadmin
 data/nextcloud
+sentry/onpremise

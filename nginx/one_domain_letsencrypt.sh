@@ -11,15 +11,7 @@ fi
 email="$1" # Adding a valid address is strongly recommended
 staging="$2" # Set to 1 if you're testing your setup to avoid hitting request limits
 
-nextcloud=""
-if [[ "$4" == "true" ]]; then
-  nextcloud="cloud.$3"
-fi
-sentry=""
-if [[ "$5" == "true" ]]; then
-  sentry="sentry.$3"
-fi
-domains="$3 www.$3 pgadmin.$3 $nextcloud $sentry"
+domains="$3"
 rsa_key_size=4096
 data_path="./data/certbot"
 docker_compose_file_path="nginx/docker-compose.yml"

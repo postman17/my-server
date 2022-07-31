@@ -45,6 +45,10 @@
       prompt: "Enter 'true' or 'false' for new SSL certs installation"
       private: false
       default: "true"
+    - name: is_sentry_need
+      prompt: "Enter 'true' or 'false' for sentry installation"
+      private: false
+      default: "false"
 # Validate entered variables
   pre_tasks:
     - shell: pwd
@@ -81,91 +85,23 @@
           Wrong nginx certs input
       when: is_new_certs_need != "true" and is_new_certs_need != "false"
       run_once: true
+    - name: Validate is_sentry_need
+      fail:
+        msg: >-
+          Wrong sentry input
+      when: is_sentry_need != "true" and is_sentry_need != "false"
+      run_once: true
 # Tasks block
   tasks:
-    - name: Create postgresql env file
-      template:
-        src: postgres/.env.db.template
-        dest: postgres/.env.db
-    - name: Create pgadmin env file
-      template:
-        src: postgres/.env.pgadmin.template
-        dest: postgres/.env.pgadmin
-    - name: Create nextcloud env file
-      template:
-        src: nextcloud/.env.template
-        dest: nextcloud/.env
-    # Create nginx configs
-    - name: Create main domain nginx config
-      template:
-        src: nginx/templates/main_domain.conf
-        dest: nginx/etc/nginx/conf.d/{{main_domain}}.conf
-    - name: Create main domain ssl nginx config
-      template:
-        src: nginx/templates/ssl.main_domain.conf.disabled
-        dest: nginx/etc/nginx/conf.d/ssl.{{main_domain}}.conf.disabled
-    - set_fact:
-        domain=pgadmin.{{main_domain}}
-        container=pgadmin
-    - name: Create pgadmin nginx config
-      template:
-        src: nginx/templates/sub_domain.conf
-        dest: nginx/etc/nginx/conf.d/pgadmin.{{main_domain}}.conf
-    - name: Create pgadmin ssl nginx config
-      template:
-        src: nginx/templates/ssl.sub_domain.conf.disabled
-        dest: nginx/etc/nginx/conf.d/ssl.pgadmin.{{main_domain}}.conf.disabled
-    - set_fact:
-        container=nextcloud
-    - name: Create nextcloud nginx config
-      template:
-        src: nginx/templates/sub_domain.conf
-        dest: nginx/etc/nginx/conf.d/cloud.{{main_domain}}.conf
-    - name: Create nextcloud ssl nginx config
-      when: is_nextcloud_need == "true"
-      template:
-        src: nginx/templates/ssl.cloud.conf.disabled
-        dest: nginx/etc/nginx/conf.d/ssl.cloud.{{main_domain}}.conf.disabled
-    # Create docker network
-    - name: Create docker network
-      shell: docker network create --gateway 172.16.1.1 --subnet 172.16.1.0/24 nginx_net
-    # Init nginx
-    - name: Initial nginx and certbot
-      shell: bash nginx/init-letsencrypt.sh {{email}} {{cerbot_staging}} {{main_domain}} {{is_nextcloud_need}}
-      register: init_nginx
-      when: is_new_certs_need  == "true"
-    - name: Start nginx with old certs
-      shell: bash nginx/init-configs.sh {{main_domain}} {{is_nextcloud_need}}
-      register: init_nginx
-      when: is_new_certs_need  == "false"
-    - debug: var=init_nginx.stdout
-  # Start postgresql
-    - name: Start Postgresql
-      shell: docker-compose -f postgres/docker-compose.yml up -d postgres
-      register: po
-    - debug: var=po.stdout
-  # Start pgadmin
-    - name: Start pgadmin
-      shell: docker-compose -f postgres/docker-compose.yml up -d pgadmin
-      register: pg
-    - debug: var=pg.stdout
-    - name: Wait 10 seconds
-      wait_for: timeout=10
-    - name: Stop pgadmin
-      shell: docker-compose -f postgres/docker-compose.yml stop pgadmin
-      register: pg
-    - debug: var=pg.stdout
-    - name: Wait 10 seconds
-      wait_for: timeout=10
-    - name: Set permissions for pgadmin volume folder
-      shell: sudo chown -R 5050:5050 data/pgadmin
-      register: pg
-    - debug: var=pg.stdout
-    - name: Start pgadmin
-      shell: docker-compose -f postgres/docker-compose.yml up -d pgadmin
-      register: pg
-    - debug: var=pg.stdout
-    # Start nextcloud
-    - name: Start nextcloud
-      shell: docker-compose -f nextcloud/docker-compose.yml up -d --build
-      when: is_nextcloud_need == "true"
+    # Install nginx and certbot
+    - name: Install nginx
+      include_tasks: nginx/nginx-ansible.yml
+    # Install postgresql and pgadmin
+    - name: Install postgresql
+      include_tasks: postgres/postgresql-ansible.yml
+    # Install nextcloud
+    - name: Install nextcloud
+      include_tasks: nextcloud/nextcloud-ansible.yml
+    # Install sentry
+    - name: Install sentry
+      include_tasks: sentry/sentry-ansible.yml

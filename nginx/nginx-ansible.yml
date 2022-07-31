@@ -35,7 +35,7 @@
 # Create sentry configs
 - set_fact:
     domain=sentry.{{main_domain}}
-    container=web:9000
+    container={{sentry_host}}
 - name: Create sentry nginx config
   template:
     src: nginx/templates/sub_domain.conf

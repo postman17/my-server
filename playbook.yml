@@ -49,6 +49,10 @@
       prompt: "Enter 'true' or 'false' for sentry installation"
       private: false
       default: "false"
+    - name: sentry_host
+      prompt: "Enter sentry host for nginx config"
+      private: false
+      default: "127.0.0.1:9000"
 # Validate entered variables
   pre_tasks:
     - shell: pwd

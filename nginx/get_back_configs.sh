@@ -2,14 +2,16 @@ echo "### Get back http nginx configs ..."
 
 nextcloud=""
 if [[ "$2" == "true" ]]; then
-  nextcloud="cloud.$2"
+  nextcloud="cloud.$1"
 fi
+
 sentry=""
 if [[ "$3" == "true" ]]; then
-  sentry="sentry.$3"
+  sentry="sentry.$1"
 fi
 domains="$1 www.$1 pgadmin.$1 $nextcloud $sentry"
 docker_compose_file_path="nginx/docker-compose.yml"
+
 
 for domain in $domains; do
   if [[ "$domain" != *"www"* ]]; then

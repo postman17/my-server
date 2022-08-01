@@ -90,7 +90,7 @@
       when: is_nextcloud_need == "true"
       template:
         src: nginx/templates/ssl.cloud.conf.disabled
-        dest: nginx/etc/nginx/conf.d/ssl.cloud.{{main_domain}}.conf.disable
+        dest: nginx/etc/nginx/conf.d/ssl.cloud.{{main_domain}}.conf.disabled
     # Create sentry configs
     - set_fact:
         domain=sentry.{{main_domain}}

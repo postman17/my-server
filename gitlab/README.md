@@ -11,7 +11,7 @@ docker-compose up -d
 - after run gitlab change root password (username root and set password)
 ```shell
 sudo docker exec -it container_name bash
-gitlab-rake "gitlab:password:reset[username]"
+gitlab-rake "gitlab:password:reset[root]"
 ```
 
 ##### Materials

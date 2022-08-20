@@ -39,7 +39,7 @@
 # Create sentry configs
 - set_fact:
     domain=sentry.{{main_domain}}
-    container=127.0.0.1:9000
+    container={{server_ip}}:9000
 - name: Create sentry nginx config
   template:
     src: nginx/templates/sub_domain.conf
@@ -53,7 +53,7 @@
 # Create gitlab configs
 - set_fact:
     domain=gitlab.{{main_domain}}
-    container=127.0.0.1:9080
+    container={{server_ip}}:9080
 - name: Create gitlab nginx config
   template:
     src: nginx/templates/sub_domain.conf

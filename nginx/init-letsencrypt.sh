@@ -19,7 +19,11 @@ sentry=""
 if [[ "$5" == "true" ]]; then
   sentry="sentry.$3"
 fi
-domains="$3 www.$3 pgadmin.$3 $nextcloud $sentry"
+gitlab=""
+if [[ "$6" == "true" ]]; then
+  gitlab="gitlab.$3"
+fi
+domains="$3 www.$3 pgadmin.$3 $nextcloud $sentry $gitlab"
 rsa_key_size=4096
 data_path="./data/certbot"
 docker_compose_file_path="nginx/docker-compose.yml"

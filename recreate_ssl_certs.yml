@@ -134,6 +134,6 @@
 
     # Certbot certs
     - name: Create new certs and restart certbot and nginx
-      shell: bash nginx/init-letsencrypt.sh {{email}} {{certbot_staging}} {{main_domain}} {{is_nextcloud_need}} {{is_sentry_need}}
+      shell: bash nginx/init-letsencrypt.sh {{email}} {{certbot_staging}} {{main_domain}} {{is_nextcloud_need}} {{is_sentry_need}} {{is_gitlab_need}}
       register: init_nginx
     - debug: var=init_nginx.stdout

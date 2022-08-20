@@ -10,18 +10,6 @@ services:
         external_url '$GITLAB_EXTERNAL_URL'
         nginx['listen_port'] = 9080
         nginx['listen_https'] = false
-        letsencrypt['enabled'] = false
-        # Reverse proxy nginx config
-        nginx['redirect_http_to_https'] = false
-        nginx['proxy_set_headers'] = {
-          "X-Forwarded-Proto" => "https",
-          "X-Forwarded-Ssl" => "on",
-          "Host" => "$GITLAB_HOST",
-          "X-Real-IP" => "$$remote_addr",
-          "X-Forwarded-For" => "$$proxy_add_x_forwarded_for",
-          "Upgrade" => "$$http_upgrade",
-          "Connection" => "$$connection_upgrade"
-        }
     ports:
       - '9080:9080'
       - '23:22'

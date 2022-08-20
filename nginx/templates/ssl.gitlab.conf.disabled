@@ -1,0 +1,42 @@
+server {
+  listen 80;
+  listen 443 ssl;
+  # Слушаем на портах 80 и 443
+  server_name {{domain}};
+  # Этот сервер блок выполняется при этих доменных именах
+
+  # Логи
+  error_log /var/log/nginx/{{domain}}.error warn;
+
+  ssl_certificate /etc/letsencrypt/live/{{main_domain}}/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/{{main_domain}}/privkey.pem;
+  ssl_trusted_certificate /etc/letsencrypt/live/{{main_domain}}/chain.pem;
+  # ssl_certificate и ssl_certificate_key - необходимые сертификаты
+  include /etc/letsencrypt/options-ssl-nginx.conf;
+  ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+  # include и ssl_dhparam - дополнительные, рекомендуемые Let's Encrypt, параметры
+
+  # Определяем, нужен ли редирект с www на без www'шную версию
+  if ($server_port = 80) { set $https_redirect 1; }
+  if ($host ~ '^www\.') { set $https_redirect 1; }
+  if ($https_redirect = 1) { return 301 https://{{domain}}$request_uri; }
+
+  location /.well-known/acme-challenge/ { root /var/www/certbot; }
+  # Путь по которому certbot сможет проверить сервер на подлинность
+
+  limit_conn perip 50;
+
+  location / {
+    resolver 127.0.0.11;
+    set $project http://{{container}};
+    proxy_pass $project;
+    proxy_read_timeout      300;
+    proxy_connect_timeout   300;
+    proxy_redirect          off;
+    proxy_set_header        X-Forwarded-Proto https;
+    proxy_set_header        Host              $http_host;
+    proxy_set_header        X-Real-IP         $remote_addr;
+    proxy_set_header        X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header        X-Forwarded-Ssl   on;
+  }
+}

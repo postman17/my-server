@@ -61,7 +61,7 @@
 - name: Create gitlab ssl nginx config
   when: is_gitlab_need == "true"
   template:
-    src: nginx/templates/ssl.sub_domain.conf.disabled
+    src: nginx/templates/ssl.gitlab.conf.disabled
     dest: nginx/etc/nginx/conf.d/ssl.gitlab.{{main_domain}}.conf.disabled
 
 # Create docker network

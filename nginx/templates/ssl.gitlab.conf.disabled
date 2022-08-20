@@ -24,8 +24,6 @@ server {
   location /.well-known/acme-challenge/ { root /var/www/certbot; }
   # Путь по которому certbot сможет проверить сервер на подлинность
 
-  limit_conn perip 50;
-
   location / {
     resolver 127.0.0.11;
     set $project http://{{container}};

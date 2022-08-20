@@ -1,5 +1,5 @@
 - set_fact:
-    gitlab_external_url=gitlab.{{main_domain}}
+    external_url=http://gitlab.{{main_domain}}
 - name: Create gitlab env file
   template:
     src: gitlab/.env.template

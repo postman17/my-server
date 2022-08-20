@@ -12,7 +12,7 @@ services:
         nginx['listen_https'] = false
     ports:
       - '9080:9080'
-      - '22:22'
+      - '23:22'
     volumes:
       - ../data/gitlab/config:/etc/gitlab
       - ../data/gitlab/logs:/var/log/gitlab

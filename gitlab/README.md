@@ -1,3 +1,12 @@
+#### Install
+- copy .env.example to .env and set external_url
+```shell
+set -o allexport; source .env; set +o allexport
+```
+```shell
+docker-compose up -d
+```
+
 #### Do it.
 - after run gitlab change root password (username root and set password)
 ```shell

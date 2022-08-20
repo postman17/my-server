@@ -1,4 +1,5 @@
 # Create nginx configs
+
 # Create main domain configs
 - name: Create main domain nginx config
   template:
@@ -8,6 +9,7 @@
   template:
     src: nginx/templates/ssl.main_domain.conf.disabled
     dest: nginx/etc/nginx/conf.d/ssl.{{main_domain}}.conf.disabled
+
 # Create pgadmin configs
 - set_fact:
     domain=pgadmin.{{main_domain}}
@@ -20,6 +22,7 @@
   template:
     src: nginx/templates/ssl.sub_domain.conf.disabled
     dest: nginx/etc/nginx/conf.d/ssl.pgadmin.{{main_domain}}.conf.disabled
+
 # Create nextcloud configs
 - set_fact:
     container=nextcloud
@@ -32,10 +35,11 @@
   template:
     src: nginx/templates/ssl.cloud.conf.disabled
     dest: nginx/etc/nginx/conf.d/ssl.cloud.{{main_domain}}.conf.disable
+
 # Create sentry configs
 - set_fact:
     domain=sentry.{{main_domain}}
-    container={{sentry_host}}
+    container=127.0.0.1:9000
 - name: Create sentry nginx config
   template:
     src: nginx/templates/sub_domain.conf
@@ -45,9 +49,25 @@
   template:
     src: nginx/templates/ssl.sub_domain.conf.disabled
     dest: nginx/etc/nginx/conf.d/ssl.sentry.{{main_domain}}.conf.disabled
+
+# Create gitlab configs
+- set_fact:
+    domain=gitlab.{{main_domain}}
+    container=127.0.0.1:9080
+- name: Create gitlab nginx config
+  template:
+    src: nginx/templates/sub_domain.conf
+    dest: nginx/etc/nginx/conf.d/gitlab.{{main_domain}}.conf
+- name: Create gitlab ssl nginx config
+  when: is_gitlab_need == "true"
+  template:
+    src: nginx/templates/ssl.sub_domain.conf.disabled
+    dest: nginx/etc/nginx/conf.d/ssl.gitlab.{{main_domain}}.conf.disabled
+
 # Create docker network
 - name: Create docker network
   shell: docker network create --gateway 172.16.1.1 --subnet 172.16.1.0/24 nginx_net
+
 # Init nginx
 - name: Initial nginx and certbot
   shell: bash nginx/init-letsencrypt.sh {{email}} {{certbot_staging}} {{main_domain}} {{is_nextcloud_need}} {{is_sentry_need}}

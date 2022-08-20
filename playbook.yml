@@ -3,6 +3,7 @@
   hosts: 127.0.0.1
   connection: local
   become: true
+
 # Variables block
   vars_prompt:
     - name: main_domain
@@ -49,10 +50,11 @@
       prompt: "Enter 'true' or 'false' for sentry installation"
       private: false
       default: "false"
-    - name: sentry_host
-      prompt: "Enter sentry host for nginx config"
+    - name: is_gitlab_need
+      prompt: "Enter 'true' or 'false' for gitlab installation"
       private: false
-      default: "127.0.0.1:9000"
+      default: "false"
+
 # Validate entered variables
   pre_tasks:
     - shell: pwd
@@ -95,6 +97,13 @@
           Wrong sentry input
       when: is_sentry_need != "true" and is_sentry_need != "false"
       run_once: true
+    - name: Validate is_gitlab_need
+      fail:
+        msg: >-
+          Wrong gitlab input
+      when: is_gitlab_need != "true" and is_gitlab_need != "false"
+      run_once: true
+
 # Tasks block
   tasks:
     # Install nginx and certbot
@@ -109,3 +118,6 @@
     # Install sentry
     - name: Install sentry
       include_tasks: sentry/sentry-ansible.yml
+    # Install gitlab
+    - name: Install gitlab
+      include_tasks: gitlab/gitlab-ansible.yml

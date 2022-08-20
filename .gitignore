@@ -3,4 +3,6 @@ data/certbot
 data/postgres
 data/pgadmin
 data/nextcloud
+data/gitlab
+data/gitlab-runner
 sentry/onpremise

@@ -1,0 +1,11 @@
+- set_fact:
+    external_url=gitlab.{{main_domain}}
+- name: Create gitlab env file
+  template:
+    src: gitlab/.env.template
+    dest: gitlab/.env
+- name: Start gitlab
+  shell: set -o allexport; source gitlab/.env; set +o allexport && cd gitlab && docker-compose up
+  register: gitlab
+  when: is_gitlab_need == "true"
+- debug: var=gitlab.stdout

@@ -10,7 +10,7 @@
       prompt: "Enter main domain"
       private: false
       default: "example.com"
-    - nam: server_ip
+    - name: server_ip
       prompt: "Enter server ip"
       private: false
       default: "127.0.0.1"

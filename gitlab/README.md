@@ -26,6 +26,7 @@ sudo docker restart gitlab-ce
 
 #### Gitlab runner settings
 - Read this - https://www.dmosk.ru/miniinstruktions.php?mini=gitlab-runner-web
+- Don't forget to add clone_url to runner config - https://stackoverflow.com/questions/72381700/gitlab-pipeline-failing-remote-http-basic-access-denied
 
 ##### Materials
 - https://www.czerniga.it/2021/11/14/how-to-install-gitlab-using-docker-compose/
